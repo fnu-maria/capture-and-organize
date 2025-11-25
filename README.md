@@ -5,8 +5,9 @@ A responsive web application for task and event management with OCR-based date e
 ## Team Members
 - FNU Maria (2873052)
 - Nazia Hassan (2911095)
+Course: CIS 434 Software Engineering FALL 2025
 
-## Features
+## Project Features
 - Task management (add, edit, delete, prioritize)
 - Event capture via device camera
 - OCR date extraction using Tesseract.js
@@ -14,7 +15,7 @@ A responsive web application for task and event management with OCR-based date e
 - Browser notifications
 - Accessibility features (themes, font sizes)
 
-## Setup
+## How to Setup
 1. Clone this repository
 2. Open `index.html` in a web browser
 3. Allow camera access for event capture feature
