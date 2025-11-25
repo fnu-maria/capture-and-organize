@@ -5,7 +5,7 @@ A responsive web application for task and event management with OCR-based date e
 ## Team Members
 - FNU Maria (2873052)
 - Nazia Hassan (2911095)
-Course: CIS 434 Software Engineering FALL 2025
+- Course: CIS 434 Software Engineering FALL 2025
 
 ## Project Features
 - Task management (add, edit, delete, prioritize)
