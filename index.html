@@ -59,18 +59,23 @@
             <div id="events-view" class="view">
                 <h2>Event Capture</h2>
                 <div class="camera-section">
-                    <video id="camera-preview" autoplay></video>
-                    <button class="cssbuttons-io-button" id="capture-btn" style="margin-top: 15px;">
-                        <span>Capture Photo</span>
+                    <!-- ADD THIS MISSING START CAMERA BUTTON -->
+                    <button id="start-camera-btn" class="cssbuttons-io-button">
+                        <span>📷 Start Camera</span>
+                    </button>
+                    
+                    <video id="camera-preview" autoplay style="display:none;"></video>
+                    <button id="capture-btn" class="cssbuttons-io-button" style="display:none; margin-top: 15px;">
+                        <span>📸 Capture Photo</span>
                     </button>
                     <canvas id="photo-canvas" style="display:none;"></canvas>
                 </div>
                 
                 <div class="ocr-results">
                     <h3>Extracted Text:</h3>
-                    <div id="extracted-text" class="extracted-text">No image captured yet.</div>
-                    <button class="cssbuttons-io-button" id="extract-text-btn" style="display:none; margin-top: 10px;">
-                        <span>Extract Text from Photo</span>
+                    <div id="extracted-text" class="extracted-text">Start camera and capture a photo to extract text.</div>
+                    <button id="extract-text-btn" class="cssbuttons-io-button" style="display:none; margin-top: 10px;">
+                        <span>🔍 Extract Text from Photo</span>
                     </button>
                 </div>
                 
@@ -88,11 +93,11 @@
                     </label>
                     
                     <div class="save-options">
-                        <button class="cssbuttons-io-button" id="save-local-btn" style="background: linear-gradient(0deg, #06d6a0 0%, #04a580 100%);">
-                            <span>💾Save to Local Calendar</span>
+                        <button id="save-local-btn" class="cssbuttons-io-button" style="background: linear-gradient(0deg, #06d6a0 0%, #04a580 100%);">
+                            <span>💾 Save to Local Calendar</span>
                         </button>
-                        <button class="cssbuttons-io-button" id="export-google-btn" style="background: linear-gradient(0deg, #4285F4 0%, #3367D6 100%);">
-                            <span>📅Export to Google Calendar</span>
+                        <button id="export-google-btn" class="cssbuttons-io-button" style="background: linear-gradient(0deg, #4285F4 0%, #3367D6 100%);">
+                            <span>📅 Export to Google Calendar</span>
                         </button>
                     </div>
                 </div>
