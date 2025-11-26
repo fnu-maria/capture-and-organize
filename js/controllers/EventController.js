@@ -104,46 +104,147 @@ class EventController {
             this.view.setEventDateTime(dateTime);
         }
     }
+	
+		extractDateTime(text) {
+		const patterns = [
+			// ISO format (2024-01-15T14:30)
+			/\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\b/,
+			
+			// MM/DD/YYYY or MM-DD-YYYY with optional time
+			/\b(0?[1-9]|1[0-2])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-](\d{4})(?:\s+(\d{1,2}):?(\d{2})?\s*(am|pm)?)?\b/i,
+			
+			// DD/MM/YYYY or DD-MM-YYYY with optional time  
+			/\b(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[0-2])[\/\-](\d{4})(?:\s+(\d{1,2}):?(\d{2})?\s*(am|pm)?)?\b/i,
+			
+			// YYYY/MM/DD or YYYY-MM-DD with optional time
+			/\b(\d{4})[\/\-](0?[1-9]|1[0-2])[\/\-](0?[1-9]|[12][0-9]|3[01])(?:\s+(\d{1,2}):?(\d{2})?\s*(am|pm)?)?\b/i,
+			
+			// Full month names with time
+			/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),?\s+(\d{4})(?:\s+at\s+(\d{1,2}):?(\d{2})?\s*(am|pm)?)?\b/i,
+			
+			// Abbreviated month names
+			/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2}),?\s+(\d{4})(?:\s+at\s+(\d{1,2}):?(\d{2})?\s*(am|pm)?)?\b/i,
+			
+			// Time-only patterns (assume today/tomorrow with time)
+			/\b(\d{1,2}):(\d{2})\s*(am|pm)?\b/i,
+			
+			// Relative dates with optional time
+			/\b(today|tomorrow|next week|\d+\s+days?)\s*(at\s+(\d{1,2}):?(\d{2})?\s*(am|pm)?)?\b/i,
+		];
 
-    extractDateTime(text) {
-        // Enhanced date parsing - handles multiple formats
-        const patterns = [
-            // MM/DD/YYYY or MM-DD-YYYY
-            /\b(0?[1-9]|1[0-2])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-](\d{4})\b/,
-            // DD/MM/YYYY or DD-MM-YYYY
-            /\b(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[0-2])[\/\-](\d{4})\b/,
-            // YYYY/MM/DD or YYYY-MM-DD
-            /\b(\d{4})[\/\-](0?[1-9]|1[0-2])[\/\-](0?[1-9]|[12][0-9]|3[01])\b/,
-            // Month names
-            /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2}),?\s+(\d{4})\b/i,
-            // Today, Tomorrow
-            /\b(today|tomorrow)\b/i,
-        ];
-        
-        for (const pattern of patterns) {
-            const match = text.match(pattern);
-            if (match) {
-                let date;
-                
-                // Handle relative dates
-                if (match[0].toLowerCase() === 'today') {
-                    date = new Date();
-                } else if (match[0].toLowerCase() === 'tomorrow') {
-                    date = new Date();
-                    date.setDate(date.getDate() + 1);
-                } else {
-                    date = new Date(match[0]);
-                }
-                
-                if (!isNaN(date.getTime())) {
-                    // Set time to current time + 1 hour
-                    date.setHours(date.getHours() + 1);
-                    return date.toISOString().slice(0, 16);
-                }
-            }
-        }
-        return null;
-    }
+		// Handle relative dates first
+		const relativeDates = {
+			'today': 0,
+			'tomorrow': 1,
+			'next week': 7,
+			'in 1 day': 1,
+			'in 2 days': 2,
+			'in 3 days': 3
+		};
+
+		const lowerText = text.toLowerCase();
+		
+		// Check for relative dates
+		for (const [key, daysToAdd] of Object.entries(relativeDates)) {
+			if (lowerText.includes(key)) {
+				let date = new Date();
+				date.setDate(date.getDate() + daysToAdd);
+				
+				// Try to extract time for relative dates
+				const timeMatch = lowerText.match(/(\d{1,2}):?(\d{2})?\s*(am|pm)?/);
+				if (timeMatch) {
+					date = this.parseTime(date, timeMatch);
+				} else {
+					// Default to current time + 1 hour if no time specified
+					date.setHours(date.getHours() + 1);
+				}
+				
+				if (!isNaN(date.getTime())) {
+					return date.toISOString().slice(0, 16);
+				}
+			}
+		}
+
+		// Check patterns for absolute dates
+		for (const pattern of patterns) {
+			const match = text.match(pattern);
+			if (match) {
+				try {
+					let date;
+					
+					// Handle ISO format directly
+					if (pattern.toString().includes('T')) {
+						date = new Date(match[0]);
+					} 
+					// Handle time-only patterns
+					else if (pattern.toString().includes('time-only')) {
+						date = new Date();
+						const timeMatch = match[0].match(/(\d{1,2}):?(\d{2})?\s*(am|pm)?/i);
+						if (timeMatch) {
+							date = this.parseTime(date, timeMatch);
+						}
+					}
+					// Handle other date patterns
+					else {
+						date = new Date(match[0]);
+						
+						// If basic parsing fails, try manual parsing
+						if (isNaN(date.getTime())) {
+							date = this.parseComplexDate(match[0]);
+						}
+					}
+					
+					if (!isNaN(date.getTime())) {
+						return date.toISOString().slice(0, 16);
+					}
+				} catch (error) {
+					console.warn('Date parsing failed for:', match[0], error);
+					continue;
+				}
+			}
+		}
+		
+		return null;
+	}
+
+	// Helper function to parse time from matches
+	parseTime(baseDate, timeMatch) {
+		const date = new Date(baseDate);
+		let hours = parseInt(timeMatch[1]);
+		const minutes = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
+		const period = timeMatch[3] ? timeMatch[3].toLowerCase() : '';
+		
+		// Handle 12-hour format
+		if (period === 'pm' && hours < 12) {
+			hours += 12;
+		} else if (period === 'am' && hours === 12) {
+			hours = 0;
+		}
+		
+		date.setHours(hours, minutes, 0, 0);
+		return date;
+	}
+
+	// Helper function for complex date parsing
+	parseComplexDate(dateString) {
+		// Try different date string formats
+		const formats = [
+			dateString,
+			dateString.replace(/-/g, '/'),
+			dateString.replace(/\//g, '-')
+		];
+		
+		for (const format of formats) {
+			const date = new Date(format);
+			if (!isNaN(date.getTime())) {
+				return date;
+			}
+		}
+		
+		return new Date(NaN); // Return invalid date
+	}
+
+
 
     handleSaveLocalEvent(title, dateTime, description) {
         if (!title.trim() || !dateTime) {
@@ -159,7 +260,7 @@ class EventController {
     }
 
     handleExportGoogleEvent(eventData) {
-        // FREE METHOD: Generate Google Calendar URL (no API needed!)
+
         const startTime = new Date(eventData.dateTime).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         const endTime = new Date(new Date(eventData.dateTime).getTime() + 60 * 60 * 1000).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         
@@ -170,4 +271,6 @@ class EventController {
         
         this.view.showNotification('Google Calendar opened with your event!');
     }
+	
+
 }

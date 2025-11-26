@@ -47,4 +47,44 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize calendar view
     calendarView.displayCalendar(eventModel.getEvents());
+	
+	window.addEventListener('error', (event) => {
+		console.error('Global error:', event.error);
+		
+		// Remove existing error notifications to prevent duplicates
+		const existingNotifications = document.querySelectorAll('.notification.error');
+		existingNotifications.forEach(notification => notification.remove());
+		
+		// user-friendly error message
+		const notification = document.createElement('div');
+		notification.className = 'notification error';
+		notification.textContent = 'Something went wrong. Please refresh the page.';
+		document.body.appendChild(notification);
+		
+		setTimeout(() => {
+			if (document.body.contains(notification)) {
+				document.body.removeChild(notification);
+			}
+		}, 5000);
+	});
+
+	window.addEventListener('unhandledrejection', (event) => {
+		console.error('Unhandled promise rejection:', event.reason);
+		event.preventDefault();
+		
+		// Remove existing error notifications
+		const existingNotifications = document.querySelectorAll('.notification.error');
+		existingNotifications.forEach(notification => notification.remove());
+		
+		const notification = document.createElement('div');
+		notification.className = 'notification error';
+		notification.textContent = 'An unexpected error occurred.';
+		document.body.appendChild(notification);
+		
+		setTimeout(() => {
+			if (document.body.contains(notification)) {
+				document.body.removeChild(notification);
+			}
+		}, 5000);
+	});
 });

@@ -33,14 +33,14 @@ class EventModel {
         this.saveEvents();
     }
 
-    getEvents() {
-        return this.events.sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
+	getEvents() {
+		return this.events.sort((a, b) => new Date(a.date) - new Date(b.date));
+	}
 
-    getUpcomingEvents() {
-        const now = new Date();
-        return this.events.filter(event => new Date(event.date) >= now);
-    }
+	getUpcomingEvents() {
+		const now = new Date();
+		return this.getEvents().filter(event => new Date(event.date) >= now);
+	}
 
     clearAllEvents() {
         this.events = [];

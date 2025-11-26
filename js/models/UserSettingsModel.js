@@ -33,6 +33,23 @@ class UserSettingsModel {
 	    areNotificationsEnabled() {
         return this.settings.notificationsEnabled;
     }
+	
+	exportData() {
+		const data = {
+			tasks: this.tasks,
+			events: this.events,
+			settings: this.settings,
+			exportDate: new Date().toISOString()
+		};
+		
+		const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `capture-organize-backup-${new Date().toISOString().split('T')[0]}.json`;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
 
     clearAllData() {
         localStorage.removeItem('tasks');

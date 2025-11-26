@@ -58,6 +58,8 @@ class EventView {
 
     showCameraPreview(stream) {
         this.cameraPreview.srcObject = stream;
+		this.cameraPreview.setAttribute('playsinline', '');
+		this.cameraPreview.setAttribute('webkit-playsinline', '');		
     }
 
     captureImageFromCamera() {
