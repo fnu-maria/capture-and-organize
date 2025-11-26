@@ -11,8 +11,8 @@ class SettingsView {
         this.saveSettingsBtn.addEventListener('click', () => {
             const settings = {
                 theme: this.themeSelect.value,
-                fontSize: this.fontSizeSelect.value
-				notificationsEnabled: this.notificationsToggle.checked 
+                fontSize: this.fontSizeSelect.value,
+                notificationsEnabled: this.notificationsToggle.checked
             };
             handler(settings);
         });
@@ -33,10 +33,9 @@ class SettingsView {
         if (settings.fontSize) {
             this.fontSizeSelect.value = settings.fontSize;
         }
-		if (settings.notificationsEnabled !== undefined) {
-			this.notificationsToggle.checked=settings.notificationsEnabled;
-		}
-		
+        if (settings.notificationsEnabled !== undefined) {
+            this.notificationsToggle.checked = settings.notificationsEnabled;
+        }
     }
 
     showNotification(message, type = 'success') {

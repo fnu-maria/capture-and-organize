@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capture and Organize</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
 </head>
 <body>
     <div class="app-container">
@@ -23,8 +27,8 @@
             <div id="tasks-view" class="view active">
                 <h2>Task List</h2>
                 <div class="task-form">
-                    <input type="text" id="task-title" placeholder="Enter task title">
-                    <select id="task-priority">
+                    <input type="text" id="task-title" placeholder="Enter task title" aria-label="Task title">
+                    <select id="task-priority" aria-label="Task priority">
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
                         <option value="high">High</option>
@@ -50,9 +54,9 @@
                 </div>
                 
                 <div class="event-form">
-                    <input type="text" id="event-title" placeholder="Event title (auto-filled from OCR)">
-                    <input type="datetime-local" id="event-datetime">
-                    <textarea id="event-description" placeholder="Event description (auto-filled from OCR)"></textarea>
+                    <input type="text" id="event-title" placeholder="Event title (auto-filled from OCR)" aria-label="Event title">
+                    <input type="datetime-local" id="event-datetime" aria-label="Event date and time">
+                    <textarea id="event-description" placeholder="Event description (auto-filled from OCR)" aria-label="Event description"></textarea>
                     
                     <div class="save-options">
                         <button id="save-local-btn">Save to Local Calendar</button>
@@ -74,14 +78,14 @@
                 <h2>Settings</h2>
                 <div class="setting-group">
                     <label for="theme-select">Theme:</label>
-                    <select id="theme-select">
+                    <select id="theme-select" aria-label="Select theme">
                         <option value="light">Light</option>
                         <option value="dark">Dark</option>
                     </select>
                 </div>
                 <div class="setting-group">
                     <label for="font-size">Font Size:</label>
-                    <select id="font-size">
+                    <select id="font-size" aria-label="Select font size">
                         <option value="12">12pt</option>
                         <option value="14">14pt</option>
                         <option value="16">16pt</option>
