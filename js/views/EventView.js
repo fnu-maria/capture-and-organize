@@ -12,6 +12,7 @@ class EventView {
         this.extractedTextElement = document.getElementById('extracted-text');
         
         this.canvasContext = this.photoCanvas.getContext('2d');
+        this.stream = null;
     }
 
     bindStartCamera(handler) {
@@ -56,47 +57,49 @@ class EventView {
         });
     }
 
-    showCameraPreview(stream) {
-        this.cameraPreview.srcObject = stream;
-		this.cameraPreview.setAttribute('playsinline', '');
-		this.cameraPreview.setAttribute('webkit-playsinline', '');		
-    }
-    
-    showOCRTips() {
-    const existingTips = document.querySelector('.ocr-tips');
-    if (existingTips) {
-        existingTips.remove();
+    // FIXED: Properly handle camera stream
+    async showCameraPreview(stream) {
+        try {
+            this.stream = stream;
+            this.cameraPreview.srcObject = stream;
+            
+            // Wait for video to be ready
+            await new Promise((resolve) => {
+                this.cameraPreview.onloadedmetadata = () => {
+                    resolve();
+                };
+            });
+            
+            this.cameraPreview.play();
+        } catch (err) {
+            console.error('Error showing camera preview:', err);
+            this.showNotification('Error accessing camera', 'error');
+        }
     }
 
-    const tips = document.createElement('div');
-    tips.className = 'ocr-tips';
-    tips.innerHTML = `
-        <h4>💡 Tips for Better OCR Results:</h4>
-        <ul>
-            <li>📷 Use good lighting</li>
-            <li>📄 Hold camera straight</li>
-            <li>🔍 Ensure text is clear and focused</li>
-            <li>📏 Avoid glare and shadows</li>
-        </ul>
-    `;
-    
-    const cameraSection = document.querySelector('.camera-section');
-    if (cameraSection) {
-        cameraSection.appendChild(tips);
-    }
-}
     captureImageFromCamera() {
-        this.photoCanvas.width = this.cameraPreview.videoWidth;
-        this.photoCanvas.height = this.cameraPreview.videoHeight;
-        
-        this.canvasContext.drawImage(
-            this.cameraPreview, 
-            0, 0, 
-            this.photoCanvas.width, 
-            this.photoCanvas.height
-        );
-        
-        return this.photoCanvas.toDataURL('image/png');
+        if (!this.stream) {
+            this.showNotification('Camera not available', 'error');
+            return null;
+        }
+
+        try {
+            this.photoCanvas.width = this.cameraPreview.videoWidth;
+            this.photoCanvas.height = this.cameraPreview.videoHeight;
+            
+            this.canvasContext.drawImage(
+                this.cameraPreview, 
+                0, 0, 
+                this.photoCanvas.width, 
+                this.photoCanvas.height
+            );
+            
+            return this.photoCanvas.toDataURL('image/png');
+        } catch (err) {
+            console.error('Error capturing image:', err);
+            this.showNotification('Error capturing image', 'error');
+            return null;
+        }
     }
 
     showExtractTextButton() {
@@ -132,6 +135,32 @@ class EventView {
         this.extractedTextElement.textContent = 'No image captured yet.';
     }
 
+    showOCRTips() {
+        // Remove existing tips if any
+        const existingTips = document.querySelector('.ocr-tips');
+        if (existingTips) {
+            existingTips.remove();
+        }
+
+        const tips = document.createElement('div');
+        tips.className = 'ocr-tips';
+        tips.innerHTML = `
+            <h4>💡 Tips for Better OCR Results:</h4>
+            <ul>
+                <li>🔦 Use good lighting</li>
+                <li>📏 Hold camera straight</li>
+                <li>🗨️ Ensure text is clear and focused</li>
+                <li>📸 Avoid glare and shadows</li>
+                <li>⏳ Wait for camera permission popup</li>
+            </ul>
+        `;
+        
+        const cameraSection = document.querySelector('.camera-section');
+        if (cameraSection) {
+            cameraSection.appendChild(tips);
+        }
+    }
+
     showNotification(message, type = 'success') {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
@@ -139,7 +168,9 @@ class EventView {
         document.body.appendChild(notification);
         
         setTimeout(() => {
-            document.body.removeChild(notification);
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
         }, 3000);
     }
 }
