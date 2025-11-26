@@ -20,6 +20,17 @@
     --secondary-color: #8e44ad;
 }
 
+/* Background Gradient */
+.background {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(247, 192, 192);
+    background: radial-gradient(125% 125% at 50% 10%, #79909799 40%, #63e 100%);
+    z-index: -10;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -28,16 +39,28 @@
 
 body {
     font-family: 'Chalkduster', 'fantasy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--background-color);
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .app-container {
     max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    width: 90%;
+    margin: 20px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .app-container {
+    background: rgba(26, 26, 26, 0.95);
 }
 
 .app-header {
@@ -49,40 +72,277 @@ body {
     font-family: 'Jazz LET', 'fantasy', 'Chalkduster', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 2.5rem;
     color: var(--title-color);
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* uiverse.io Navigation Buttons */
 .main-nav {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
-    gap: 10px;
+    gap: 15px;
     flex-wrap: wrap;
+    margin-top: 20px;
 }
 
-.nav-btn {
-    padding: 10px 20px;
+.nav-button {
+    all: unset;
+    width: 120px;
+    height: 40px;
+    font-size: 16px;
+    background: transparent;
     border: none;
-    background-color: var(--secondary-color);
-    color: white;
-    border-radius: 5px;
+    position: relative;
+    color: #f0f0f0;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Chalkduster', 'fantasy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 1;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    transition: 0.3s ease-in-out;
+    border-radius: 10px;
+    font-family: 'Chalkduster', 'fantasy';
 }
 
-.nav-btn.active {
-    background-color: var(--primary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(138, 43, 226, 0.3);
+.nav-button:hover {
+    box-shadow: rgba(232, 153, 153, 0.3) 0px 19px 38px, rgba(212, 114, 114, 0.22) 0px 15px 12px;
 }
 
-.nav-btn:hover {
-    background-color: var(--primary-color);
-    transform: translateY(-1px);
+.nav-button::after,
+.nav-button::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: -99999;
+    transition: all .4s;
+    border-radius: 10px;
 }
 
+.nav-button::before {
+    transform: translate(0%, 0%);
+    width: 100%;
+    height: 100%;
+    background-color: #4158D0;
+    background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #8cc0c3 100%);
+}
+
+.nav-button::after {
+    transform: translate(10px, 10px);
+    width: 35px;
+    height: 35px;
+    background: #6804da2f;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 50px;
+}
+
+.nav-button:hover::before {
+    transform: translate(5%, 20%);
+    width: 110%;
+    height: 110%;
+}
+
+.nav-button:hover::after {
+    border-radius: 10px;
+    transform: translate(0, 0);
+    width: 100%;
+    height: 100%;
+}
+
+.nav-button:active::after {
+    transition: 0s;
+    transform: translate(0, 5%);
+}
+
+.nav-button.active {
+    color: white;
+}
+
+/* uiverse.io Add Task Button */
+.cssbuttons-io-button {
+    display: flex;
+    align-items: center;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 0.7em 1.4em 0.7em 1.1em;
+    color: white;
+    background: #8c5d74;
+    background: linear-gradient(0deg, rgb(12, 41, 110) 0%, rgb(235, 118, 206) 100%);
+    border: none;
+    box-shadow: 0 0.7em 1.5em -0.5em #301caf98;
+    letter-spacing: 0.05em;
+    border-radius: 20em;
+    font-family: 'Chalkduster', 'fantasy';
+}
+
+.cssbuttons-io-button svg {
+    margin-right: 6px;
+}
+
+.cssbuttons-io-button:hover {
+    box-shadow: 0 0.5em 1.5em -0.5em #f1d50498;
+}
+
+.cssbuttons-io-button:active {
+    box-shadow: 0 0.3em 1em -0.5em #f602ac98;
+}
+
+/* uiverse.io Checkbox */
+.checkbox-container {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    font-size: 20px;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    width: 1.3em;
+    height: 1.3em;
+}
+
+.checkbox-container input {
+    display: none;
+}
+
+.checkmark {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 1.3em;
+    width: 1.3em;
+    background-color: rgb(255, 255, 255);
+    border-radius: 0.3em;
+    transition: all 0.25s;
+    --spread: 50px;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #000000;
+    box-shadow: -10px -10px var(--spread) 0px rgb(17, 0, 248),
+        0 -10px var(--spread) 0px rgb(243, 11, 243),
+        10px -10px var(--spread) 0px rgb(253, 228, 0),
+        10px 0 var(--spread) 0px rgb(107, 255, 21),
+        10px 10px var(--spread) 0px rgb(76, 0, 255),
+        0 10px var(--spread) 0px rgb(255, 196, 0),
+        -10px 10px var(--spread) 0px rgb(90, 105, 240);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    transform: rotate(0deg);
+    border: 0.1em solid rgba(0, 0, 0, 0.863);
+    left: 0;
+    top: 0;
+    width: 1.1em;
+    height: 1.1em;
+    border-radius: 0.25em;
+    transition: all 0.25s, border-width 0.1s;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    left: 0.45em;
+    top: 0.25em;
+    width: 0.25em;
+    height: 0.5em;
+    border-color: rgba(238, 238, 238, 0) white white #fff0;
+    border-width: 0 0.15em 0.15em 0;
+    border-radius: 0em;
+    transform: rotate(45deg);
+}
+
+/* uiverse.io Input Field */
+.input-label {
+    --border: rgba(66, 66, 66, 0.733);
+    --bgLabel: rgba(120,120,120,1);
+    --bgInput: rgba(255,255,255,1);
+    --color-light: rgb(98, 0, 255);
+    --color-light-a: rgb(133, 123, 150);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: min-content min-content;
+    background: var(--bgLabel);
+    position: relative;
+    font-size: .65rem;
+    transition: all .3s ease-out;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.input-label > .label-title {
+    border: 1px solid var(--color-light);
+    color: var(--color-light);
+    box-shadow: 0 2px 2px rgba(120,120,120,.25);
+    padding: .25em .5em;
+    background-color: var(--bgInput);
+    grid-column: 1/span 1;
+    grid-row: 1/span 1;
+    position: relative;
+    border-radius: 4px;
+    translate: 10px -10px;
+    transition: all .5s ease-out .5s;
+    z-index: 10;
+    font-family: 'Chalkduster', 'fantasy';
+}
+
+.input-label:focus-within {
+    background: transparent;
+}
+
+.input-label:focus-within .styled-input {
+    background-color: var(--bgInput);
+    padding: 1em;
+    color: var(--color-light);
+    border: 2px solid var(--color-light);
+    outline: 2px solid var(--color-light);
+    outline-offset: -2px;
+    border-radius: 12px;
+    box-shadow: 0 5px 10px rgba(98, 0, 255, .25), 0 -5px 20px rgba(98, 0, 255,.1);
+    scale: 1.05;
+    transition: all .5s cubic-bezier(0,1.46,1,1.62) .3s;
+}
+
+.input-label:focus-within .label-title {
+    translate: 10px -20px;
+    border-radius: 4px 4px 0 0;
+    z-index: 0;
+    transition: all .3s cubic-bezier(0,1.46,1,1.62);
+}
+
+.styled-input {
+    appearance: none;
+    border-top: 2px solid transparent;
+    border-right: 2px solid transparent;
+    border-bottom: 2px solid var(--color-light);
+    border-left: 2px solid transparent;
+    background-color: var(--bgInput);
+    caret-color: var(--color-light);
+    min-width: 200px;
+    padding: 1.25em 1em .25em;
+    outline: 0px solid var(--color-light);
+    grid-column: 1/-1;
+    grid-row: 1 / -1;
+    position: relative;
+    transition: all .3s cubic-bezier(.5,.6,.5,.62);
+    z-index: 0;
+    border-radius: 12px;
+    font-family: 'Chalkduster', 'fantasy';
+}
+
+.styled-input, 
+.styled-input::placeholder {
+    color: var(--color-light-a);
+    font-family: 'Chalkduster', 'fantasy';
+}
+
+/* Rest of your existing styles */
 .view {
     display: none;
 }
@@ -93,17 +353,18 @@ body {
 
 .task-form, .event-form {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     margin-bottom: 20px;
     flex-wrap: wrap;
+    align-items: end;
 }
 
 .task-form input, .event-form input, 
 .task-form select, .event-form select,
 .event-form textarea {
-    padding: 10px;
+    padding: 12px;
     border: 1px solid var(--border-color);
-    border-radius: 5px;
+    border-radius: 8px;
     background-color: var(--background-color);
     color: var(--text-color);
     font-family: 'Chalkduster', 'fantasy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -115,51 +376,10 @@ body {
     resize: vertical;
 }
 
-button {
-    padding: 10px 15px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Chalkduster', 'fantasy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background-color: #7B68EE;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(138, 43, 226, 0.3);
-}
-
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.danger-btn {
-    background-color: var(--danger-color);
-}
-
-.danger-btn:hover {
-    background-color: #ff5252;
-}
-
 .save-options {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-}
-
-#add-task-btn, #capture-btn, #extract-text-btn, #save-local-btn, #export-google-btn, #save-settings-btn {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    font-weight: bold;
-}
-
-#add-task-btn:hover, #capture-btn:hover, #extract-text-btn:hover, #save-local-btn:hover, #export-google-btn:hover, #save-settings-btn:hover {
-    background: linear-gradient(135deg, #7B68EE, #836FFF);
-    transform: translateY(-2px);
 }
 
 .task-list {
@@ -174,7 +394,7 @@ button:disabled {
     align-items: center;
     padding: 15px;
     border: 1px solid var(--border-color);
-    border-radius: 5px;
+    border-radius: 8px;
     background-color: var(--background-color);
     font-family: 'Chalkduster', 'fantasy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     transition: transform 0.2s ease;
@@ -230,7 +450,7 @@ button:disabled {
     width: 100%;
     max-width: 400px;
     border: 1px solid var(--border-color);
-    border-radius: 5px;
+    border-radius: 8px;
     background-color: #000;
 }
 
@@ -238,7 +458,7 @@ button:disabled {
     margin: 20px 0;
     padding: 15px;
     border: 1px solid var(--border-color);
-    border-radius: 5px;
+    border-radius: 8px;
     background-color: #f9f9f9;
 }
 
@@ -256,7 +476,7 @@ button:disabled {
 
 .calendar {
     border: 1px solid var(--border-color);
-    border-radius: 5px;
+    border-radius: 8px;
     padding: 20px;
     background-color: var(--background-color);
 }
@@ -270,13 +490,13 @@ button:disabled {
 }
 
 .setting-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     font-family: 'Chalkduster', 'fantasy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .setting-group label {
     display: inline-block;
-    width: 120px;
+    width: 150px;
     font-family: 'Chalkduster', 'fantasy', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -297,7 +517,7 @@ h2 {
     top: 20px;
     right: 20px;
     padding: 15px 20px;
-    border-radius: 5px;
+    border-radius: 8px;
     color: white;
     z-index: 1000;
     animation: slideIn 0.3s ease;
@@ -309,30 +529,6 @@ h2 {
 
 .notification.error {
     background-color: var(--danger-color);
-}
-
-.loading {
-    opacity: 0.6;
-    pointer-events: none;
-    position: relative;
-}
-
-.loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 @keyframes slideIn {
@@ -351,9 +547,10 @@ h2 {
         flex-direction: column;
     }
     
-    .nav-btn {
+    .nav-button {
         padding: 8px 15px;
         font-size: 0.9rem;
+        width: 100px;
     }
     
     .app-header h1 {
@@ -373,5 +570,10 @@ h2 {
     .setting-group label {
         width: 100%;
         margin-bottom: 5px;
+    }
+    
+    .app-container {
+        padding: 20px;
+        margin: 10px;
     }
 }

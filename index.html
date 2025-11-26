@@ -5,20 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capture and Organize</title>
     <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="site.webmanifest">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#8A2BE2">
 </head>
 <body>
+    <div class="background"></div>
+    
     <div class="app-container">
         <header class="app-header">
             <h1>Capture and Organize</h1>
             <nav class="main-nav">
-                <button class="nav-btn active" data-view="tasks">Tasks</button>
-                <button class="nav-btn" data-view="events">Events</button>
-                <button class="nav-btn" data-view="calendar">Calendar</button>
-                <button class="nav-btn" data-view="settings">Settings</button>
+                <button role="button" class="nav-button active" data-view="tasks">Tasks</button>
+                <button role="button" class="nav-button" data-view="events">Events</button>
+                <button role="button" class="nav-button" data-view="calendar">Calendar</button>
+                <button role="button" class="nav-button" data-view="settings">Settings</button>
             </nav>
         </header>
 
@@ -27,13 +34,23 @@
             <div id="tasks-view" class="view active">
                 <h2>Task List</h2>
                 <div class="task-form">
-                    <input type="text" id="task-title" placeholder="Enter task title" aria-label="Task title">
+                    <label for="task-title" class="input-label">
+                        <span class="label-title">Task title</span>
+                        <input type="text" id="task-title" class="styled-input" name="text" placeholder="Enter task title">
+                    </label>
                     <select id="task-priority" aria-label="Task priority">
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
                         <option value="high">High</option>
                     </select>
-                    <button id="add-task-btn">Add Task</button>
+                    <input type="datetime-local" id="task-due-date" aria-label="Due date">
+                    <button class="cssbuttons-io-button" id="add-task-btn">
+                        <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" fill="currentColor"></path>
+                        </svg>
+                        <span>Add Task</span>
+                    </button>
                 </div>
                 <div id="task-list" class="task-list"></div>
             </div>
@@ -43,24 +60,40 @@
                 <h2>Event Capture</h2>
                 <div class="camera-section">
                     <video id="camera-preview" autoplay></video>
-                    <button id="capture-btn">Capture Photo</button>
+                    <button class="cssbuttons-io-button" id="capture-btn" style="margin-top: 15px;">
+                        <span>Capture Photo</span>
+                    </button>
                     <canvas id="photo-canvas" style="display:none;"></canvas>
                 </div>
                 
                 <div class="ocr-results">
                     <h3>Extracted Text:</h3>
                     <div id="extracted-text" class="extracted-text">No image captured yet.</div>
-                    <button id="extract-text-btn" style="display:none;">Extract Text from Photo</button>
+                    <button class="cssbuttons-io-button" id="extract-text-btn" style="display:none; margin-top: 10px;">
+                        <span>Extract Text from Photo</span>
+                    </button>
                 </div>
                 
                 <div class="event-form">
-                    <input type="text" id="event-title" placeholder="Event title (auto-filled from OCR)" aria-label="Event title">
-                    <input type="datetime-local" id="event-datetime" aria-label="Event date and time">
-                    <textarea id="event-description" placeholder="Event description (auto-filled from OCR)" aria-label="Event description"></textarea>
+                    <label for="event-title" class="input-label">
+                        <span class="label-title">Event title</span>
+                        <input type="text" id="event-title" class="styled-input" placeholder="Event title (auto-filled from OCR)">
+                    </label>
+                    
+                    <input type="datetime-local" id="event-datetime" aria-label="Event date and time" style="padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    
+                    <label for="event-description" class="input-label">
+                        <span class="label-title">Description</span>
+                        <textarea id="event-description" class="styled-input" placeholder="Event description (auto-filled from OCR)" style="min-height: 80px; resize: vertical;"></textarea>
+                    </label>
                     
                     <div class="save-options">
-                        <button id="save-local-btn">Save to Local Calendar</button>
-                        <button id="export-google-btn">Export to Google Calendar</button>
+                        <button class="cssbuttons-io-button" id="save-local-btn" style="background: linear-gradient(0deg, #06d6a0 0%, #04a580 100%);">
+                            <span>Save to Local Calendar</span>
+                        </button>
+                        <button class="cssbuttons-io-button" id="export-google-btn" style="background: linear-gradient(0deg, #4285F4 0%, #3367D6 100%);">
+                            <span>Export to Google Calendar</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -92,16 +125,23 @@
                         <option value="18">18pt</option>
                     </select>
                 </div>
-				<div class="setting-group">
-					<label for="notifications-toggle">Enable Notifications:</label>
-					<input type="checkbox" id="notifications-toggle" checked>
-				</div>
-                <button id="save-settings-btn">Save Settings</button>
                 <div class="setting-group">
-                    <button id="clear-data-btn" class="danger-btn">Clear All Data</button>
+                    <label for="notifications-toggle" style="display: flex; align-items: center; gap: 10px;">
+                        Enable Notifications:
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="notifications-toggle" checked>
+                            <div class="checkmark"></div>
+                        </label>
+                    </label>
                 </div>
-				
-				
+                <button id="save-settings-btn" class="cssbuttons-io-button" style="background: linear-gradient(0deg, #4158D0 0%, #C850C0 100%);">
+                    <span>Save Settings</span>
+                </button>
+                <div class="setting-group">
+                    <button id="clear-data-btn" class="cssbuttons-io-button" style="background: linear-gradient(0deg, #ff6b6b 0%, #ff5252 100%);">
+                        <span>Clear All Data</span>
+                    </button>
+                </div>
             </div>
         </main>
     </div>
