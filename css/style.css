@@ -461,7 +461,29 @@ body {
     border-radius: 8px;
     background-color: #f9f9f9;
 }
+.ocr-tips {
+    background: rgba(101, 19, 178, 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
 
+.ocr-tips h4 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.ocr-tips ul {
+    list-style: none;
+    padding: 0;
+}
+
+.ocr-tips li {
+    margin-bottom: 5px;
+    padding-left: 0;
+}
 .extracted-text {
     max-height: 150px;
     overflow-y: auto;

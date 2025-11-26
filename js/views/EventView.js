@@ -61,7 +61,30 @@ class EventView {
 		this.cameraPreview.setAttribute('playsinline', '');
 		this.cameraPreview.setAttribute('webkit-playsinline', '');		
     }
+    
+    showOCRTips() {
+    const existingTips = document.querySelector('.ocr-tips');
+    if (existingTips) {
+        existingTips.remove();
+    }
 
+    const tips = document.createElement('div');
+    tips.className = 'ocr-tips';
+    tips.innerHTML = `
+        <h4>💡 Tips for Better OCR Results:</h4>
+        <ul>
+            <li>📷 Use good lighting</li>
+            <li>📄 Hold camera straight</li>
+            <li>🔍 Ensure text is clear and focused</li>
+            <li>📏 Avoid glare and shadows</li>
+        </ul>
+    `;
+    
+    const cameraSection = document.querySelector('.camera-section');
+    if (cameraSection) {
+        cameraSection.appendChild(tips);
+    }
+}
     captureImageFromCamera() {
         this.photoCanvas.width = this.cameraPreview.videoWidth;
         this.photoCanvas.height = this.cameraPreview.videoHeight;
