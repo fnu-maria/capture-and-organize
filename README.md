@@ -19,3 +19,4 @@ A responsive web application for task and event management with OCR-based date e
 1. Clone this repository
 2. Open `index.html` in a web browser
 3. Allow camera access for event capture feature
+4. Read "User Guide" to see how to use our web-app
