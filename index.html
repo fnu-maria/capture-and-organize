@@ -164,5 +164,26 @@
     <script src="js/controllers/UserSettingsController.js"></script>
     
     <script src="js/app.js"></script>
+    <script>
+    // Temporary debug
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Debug: DOM ready');
+        
+        const buttons = document.querySelectorAll('button[data-view]');
+        console.log('Debug: Found buttons:', buttons.length);
+        
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                console.log('Debug: Button clicked - data-view:', this.dataset.view);
+                
+                // Manual view switching as backup
+                document.querySelectorAll('.view').forEach(view => {
+                    view.classList.remove('active');
+                });
+                document.getElementById(this.dataset.view + '-view').classList.add('active');
+            });
+        });
+    });
+</script>
 </body>
 </html>
