@@ -4,6 +4,7 @@ class SettingsView {
         this.fontSizeSelect = document.getElementById('font-size');
         this.saveSettingsBtn = document.getElementById('save-settings-btn');
         this.clearDataBtn = document.getElementById('clear-data-btn');
+        this.notificationsToggle = document.getElementById('notifications-toggle'); 
     }
 
     bindSaveSettings(handler) {
@@ -11,6 +12,7 @@ class SettingsView {
             const settings = {
                 theme: this.themeSelect.value,
                 fontSize: this.fontSizeSelect.value
+				notificationsEnabled: this.notificationsToggle.checked 
             };
             handler(settings);
         });
@@ -31,6 +33,10 @@ class SettingsView {
         if (settings.fontSize) {
             this.fontSizeSelect.value = settings.fontSize;
         }
+		if (settings.notificationsEnabled !== undefined) {
+			this.notificationsToggle.checked=settings.notificationsEnabled;
+		}
+		
     }
 
     showNotification(message, type = 'success') {

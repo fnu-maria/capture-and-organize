@@ -30,6 +30,9 @@ class UserSettingsModel {
         // Apply font size
         document.body.style.fontSize = this.settings.fontSize + 'px';
     }
+	    areNotificationsEnabled() {
+        return this.settings.notificationsEnabled;
+    }
 
     clearAllData() {
         localStorage.removeItem('tasks');
