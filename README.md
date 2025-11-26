@@ -1,6 +1,7 @@
 # Capture and Organize
 
 A responsive web application for task and event management with OCR-based date extraction from event posters.
+Web-app: 'https://capture-and-organize.netlify.app/'
 
 ## Team Members
 - FNU Maria (2873052)
