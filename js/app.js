@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const userSettingsController = new UserSettingsController(userSettingsModel, settingsView);
     
     // Handle navigation between views
-    const navButtons = document.querySelectorAll('.nav-btn');
+    const navButtons = document.querySelectorAll('.nav-button');
     const views = document.querySelectorAll('.view');
     
     navButtons.forEach(button => {
@@ -36,10 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Handle camera when switching to/from events view
-            if (targetView === 'events') {
-                eventController.handleStartCamera();
-            } else {
+            // STOP automatic camera start - let user click the button instead
+            if (targetView !== 'events') {
                 eventController.handleStopCamera();
             }
         });

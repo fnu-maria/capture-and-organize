@@ -2,6 +2,7 @@ class EventView {
     constructor() {
         this.cameraPreview = document.getElementById('camera-preview');
         this.photoCanvas = document.getElementById('photo-canvas');
+        this.startCameraBtn = document.getElementById('start-camera-btn');
         this.captureBtn = document.getElementById('capture-btn');
         this.extractTextBtn = document.getElementById('extract-text-btn');
         this.eventTitleInput = document.getElementById('event-title');
@@ -16,21 +17,29 @@ class EventView {
     }
 
     bindStartCamera(handler) {
-        // This will be called when events view is shown
-        this.startCameraHandler = handler;
+        this.startCameraBtn.addEventListener('click', async () => {
+            console.log('Start Camera button clicked');
+            this.showNotification('Requesting camera access...');
+            await handler();
+        });
     }
 
     bindStopCamera(handler) {
-        // This will be called when events view is hidden
         this.stopCameraHandler = handler;
     }
 
     bindCaptureImage(handler) {
-        this.captureBtn.addEventListener('click', handler);
+        this.captureBtn.addEventListener('click', () => {
+            console.log('Capture button clicked');
+            handler();
+        });
     }
 
     bindExtractText(handler) {
-        this.extractTextBtn.addEventListener('click', handler);
+        this.extractTextBtn.addEventListener('click', () => {
+            console.log('Extract Text button clicked');
+            handler();
+        });
     }
 
     bindSaveLocalEvent(handler) {
@@ -57,23 +66,21 @@ class EventView {
         });
     }
 
-    // FIXED: Properly handle camera stream
-    async showCameraPreview(stream) {
+    showCameraPreview(stream) {
         try {
             this.stream = stream;
             this.cameraPreview.srcObject = stream;
             
-            // Wait for video to be ready
-            await new Promise((resolve) => {
-                this.cameraPreview.onloadedmetadata = () => {
-                    resolve();
-                };
-            });
+            // Show the camera preview and hide start button
+            this.startCameraBtn.style.display = 'none';
+            this.cameraPreview.style.display = 'block';
+            this.captureBtn.style.display = 'inline-block';
             
-            this.cameraPreview.play();
+            this.showNotification('Camera started successfully!');
+            
         } catch (err) {
             console.error('Error showing camera preview:', err);
-            this.showNotification('Error accessing camera', 'error');
+            this.showNotification('Error accessing camera: ' + err.message, 'error');
         }
     }
 
@@ -94,6 +101,7 @@ class EventView {
                 this.photoCanvas.height
             );
             
+            this.showNotification('Photo captured! Click "Extract Text" to process.');
             return this.photoCanvas.toDataURL('image/png');
         } catch (err) {
             console.error('Error capturing image:', err);
@@ -124,7 +132,7 @@ class EventView {
 
     showOCRProgress(show) {
         this.extractTextBtn.disabled = show;
-        this.extractTextBtn.textContent = show ? 'Processing...' : 'Extract Text from Photo';
+        this.extractTextBtn.textContent = show ? '⏳ Processing...' : '🔍 Extract Text from Photo';
     }
 
     resetEventForm() {
@@ -132,11 +140,20 @@ class EventView {
         this.eventDateTimeInput.value = '';
         this.eventDescription.value = '';
         this.extractTextBtn.style.display = 'none';
-        this.extractedTextElement.textContent = 'No image captured yet.';
+        this.extractedTextElement.textContent = 'Start camera and capture a photo to extract text.';
+        
+        // Reset camera UI
+        this.startCameraBtn.style.display = 'inline-block';
+        this.cameraPreview.style.display = 'none';
+        this.captureBtn.style.display = 'none';
+        
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.stream = null;
+        }
     }
 
     showOCRTips() {
-        // Remove existing tips if any
         const existingTips = document.querySelector('.ocr-tips');
         if (existingTips) {
             existingTips.remove();
@@ -147,11 +164,11 @@ class EventView {
         tips.innerHTML = `
             <h4>💡 Tips for Better OCR Results:</h4>
             <ul>
-                <li>🔦 Use good lighting</li>
+                <li>🔰 Click "Start Camera" to begin</li>
+                <li>📸 Use good lighting</li>
                 <li>📏 Hold camera straight</li>
-                <li>🗨️ Ensure text is clear and focused</li>
-                <li>📸 Avoid glare and shadows</li>
-                <li>⏳ Wait for camera permission popup</li>
+                <li>📑 Ensure text is clear and focused</li>
+                <li> 🔦Avoid glare and shadows</li>
             </ul>
         `;
         
@@ -162,6 +179,10 @@ class EventView {
     }
 
     showNotification(message, type = 'success') {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notification => notification.remove());
+        
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.textContent = message;
