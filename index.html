@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capture and Organize</title>
     <link rel="stylesheet" href="css/style.css">
-    
-    <!-- Favicon -->
+    <link rel="stylesheet" href="css/buttons.css">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -59,11 +58,9 @@
             <div id="events-view" class="view">
                 <h2>Event Capture</h2>
                 <div class="camera-section">
-                    <!-- ADD THIS MISSING START CAMERA BUTTON -->
                     <button id="start-camera-btn" class="cssbuttons-io-button">
                         <span>📷 Start Camera</span>
                     </button>
-                    
                     <video id="camera-preview" autoplay style="display:none;"></video>
                     <button id="capture-btn" class="cssbuttons-io-button" style="display:none; margin-top: 15px;">
                         <span>📸 Capture Photo</span>
@@ -85,7 +82,7 @@
                         <input type="text" id="event-title" class="styled-input" placeholder="Event title (auto-filled from OCR)">
                     </label>
                     
-                    <input type="datetime-local" id="event-datetime" aria-label="Event date and time" style="padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <input type="datetime-local" id="event-datetime" aria-label="Event date and time" class="datetime-input">
                     
                     <label for="event-description" class="input-label">
                         <span class="label-title">Description</span>
@@ -107,7 +104,7 @@
             <div id="calendar-view" class="view">
                 <h2>Calendar</h2>
                 <div id="calendar" class="calendar">
-                    <p>Your events will appear here...</p>
+                    <!-- Calendar will be rendered here by JavaScript -->
                 </div>
             </div>
 
@@ -169,26 +166,5 @@
     <script src="js/controllers/UserSettingsController.js"></script>
     
     <script src="js/app.js"></script>
-    <script>
-    // Temporary debug
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Debug: DOM ready');
-        
-        const buttons = document.querySelectorAll('button[data-view]');
-        console.log('Debug: Found buttons:', buttons.length);
-        
-        buttons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                console.log('Debug: Button clicked - data-view:', this.dataset.view);
-                
-                // Manual view switching as backup
-                document.querySelectorAll('.view').forEach(view => {
-                    view.classList.remove('active');
-                });
-                document.getElementById(this.dataset.view + '-view').classList.add('active');
-            });
-        });
-    });
-</script>
 </body>
 </html>
